@@ -1,4 +1,0 @@
-SLURM_JOBID: 166
-HD128620
-logs/HD128620_N1e2_Ncore32_pexo.log
-R CMD BATCH --no-save --no-restore --args -m fit -c TR -p HD128620 -N 1e2 -n 32 -C 1 pexo.R logs/HD128620_N1e2_Ncore32_pexo.log 2>1 out/slurm%j.out
