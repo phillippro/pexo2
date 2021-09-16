@@ -1,0 +1,97 @@
+#####plot
+pdf('test.pdf',16,16)
+par(mfrow=c(4,4))
+for(star in Par$stars){
+    index <- which(Data$type=='rv' & Data$star==star)
+    if(length(index)>0){
+        tauE <- model[index,1]
+        rv <- Data[index,2]-model[index,2]#residual
+        erv <- Data[index,3]
+        ins <- Data[index,'instrument']
+	ind <- sort(tauE,index.return=TRUE)$ix
+        if(outf){
+            ##individual RV data
+            instr <- unique(ins)
+            pp <- data.frame(tauE,rv,erv,ins)
+            for(i in instr){
+                ii <- which(pp[,4]==i)
+                tmp <- pp[ii,1:3]
+                fout <- paste0(dir.out,star,'_',i,'.rv')
+                cat('Barycentrically corrected RV file:\n',fout,'\n\n')
+                write.table(tmp,file=fout,quote=FALSE,row.names=FALSE,col.names=c('tauE','RV','eRV'))
+            }
+            ##combined RV data
+#            out <- data.frame(tauE,rv,erv,ins)[ind,]
+            out <- data.frame(tauE,rv,erv)[ind,]
+            fout <- paste0(dir.out,star,'_combined.rv')
+            cat('Barycentrically corrected RV file:\n',fout,'\n\n')
+#            write.table(out,file=fout,quote=FALSE,row.names=FALSE,col.names=c('tauE','RV','eRV','Instrument'))
+            write.table(out,file=fout,quote=FALSE,row.names=FALSE,col.names=c('tauE','RV','eRV'))
+            if(star=='HD128620'){
+#                ind <- which((out[,2]-mean(out[,2]))<3*sd(out[,2]) & out[,2]> -15)
+            }else{
+#                ind <- which((out[,2]-mean(out[,2]))<3*sd(out[,2]))
+            }
+        }
+###save residual RVs
+        inss <- unique(Data$instrument[index])
+        for(instr in inss){
+            ind <- index[Data[index,'instrument']==instr]
+            plot(Data[ind,1],Data[ind,2],xlab='jd',ylab='RV',main=paste('RV for',instr,star),xlim=range(model[ind,1],Data[ind,1]),ylim=range(model[ind,2],Data[ind,2]))
+            points(Data[ind,1],model[ind,2],col='red')
+            plot(Data[ind,1],Data[ind,2]-model[ind,2],xlab='JD',ylab='RV [m/s]',main=paste('rv residual for',instr,star,';sd(res)=',round(sd(Data[ind,2]-model[ind,2]),3)))
+            tauE <- model[ind,1]
+            rv <- Data[ind,2]-model[ind,2]#residual
+            erv <- Data[ind,3]
+            out <- cbind(tauE,rv,erv)
+            ind <- which((out[,2]-median(out[,2]))<5*sd(out[,2]))
+            out1 <- out[ind,]
+        }
+    }
+
+    inds <- which(Data$type=='abs' & Data$star==star)
+    if(length(inds)>0){
+        inss <- unique(Data[inds,'instrument'])
+        for(instr in inss){
+            index <- inds[Data[inds,'instrument']==instr]
+            plot(Data[index,2]*180/pi,Data[index,4]*180/pi,xlab='ra[deg]',ylab='dec[deg]',main=paste(instr,'absolute astrometry for',star),xlim=range(model[index,2]*180/pi,Data[index,2]*180/pi),ylim=range(model[index,4]*180/pi,Data[index,4]*180/pi))
+            points(model[index,2]*180/pi,model[index,4]*180/pi,col='red')
+            plot((Data[index,2]-model[index,2])*206264.8,(Data[index,4]-model[index,4])*206264.8,xlab='ra[as]',ylab='dec[as]',main=paste(instr,'astrometry residual for',star))
+            plot(Data[index,1],(Data[index,2]-model[index,2])*206264.8,xlab='JD',ylab='ra[as]',main=paste(instr,'astrometry residual for',star))
+            plot(Data[index,1],(Data[index,4]-model[index,4])*206264.8,xlab='JD',ylab='dec[as]',main=paste(instr,'astrometry residual for',star))
+            if(outf){
+                ##save residual RVs
+                dra <- (Data[index,2]-model[index,2])*cos(model[index,4])/DMAS2R
+                ddec <- (Data[index,4]-model[index,4])/DMAS2R
+                tauE <- model[index,1]
+                out <- cbind(tauE,dra,Data[index,3],ddec,Data[index,5])
+                fout <- paste0(dir.out,star,'_',instr,'.abs')
+                cat(fout,'\n\n')
+                write.table(out,file=fout,quote=FALSE,row.names=FALSE,col.names=c('tauE','dra','era','ddec','edec'))
+            }
+        }
+    }
+}
+
+inds <- which(Data$type=='rel')
+if(length(inds)>0){
+    inss <- unique(Data[inds,'instrument'])
+    for(instr in inss){
+        index <- inds[Data[inds,'instrument']==instr]
+        plot(Data[index,2],Data[index,4],xlab='ra*',ylab='dec',main=paste(instr,'relative astrometry'),xlim=range(model[index,2],Data[index,2]),ylim=range(model[index,4],Data[index,4]))
+#        arrows(Data[index,2],Data[index,4]-Data[index,5],Data[index,2],Data[index,4]+Data[index,5],length=0.1,angle=90,code=3,col='grey',lwd=2)
+#        arrows(Data[index,2]-Data[index,3],Data[index,4],Data[index,2]+Data[index,3],Data[index,4],length=0.1,angle=90,code=3,col='grey',lwd=2)
+        points(model[index,2],model[index,4],col='red')
+
+        plot(Data[index,2]-model[index,2],Data[index,4]-model[index,4],xlab='ra*',ylab='dec',main=paste(instr,'relative astrometry residual'))
+        dra <- Data[index,2]-model[index,2]
+        ddec <- Data[index,4]-model[index,4]
+        tauE <- model[index,1]
+        out <- cbind(tauE,dra,Data[index,3],ddec,Data[index,5])
+        fout <- paste0(dir.out,star,'_',instr,'.rel')
+        cat(fout,'\n\n')
+        write.table(out,file=fout,quote=FALSE,row.names=FALSE,col.names=c('tauE','dra','era','ddec','edec'))
+    }
+}
+
+dev.off()

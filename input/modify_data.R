@@ -1,0 +1,20 @@
+factA <- read.table('HD128620/factorbary/HD128620_PFS.rv',header=TRUE)
+factB <- read.table('HD128621/factorbary/HD128621_PFS.rv',header=TRUE)
+sumA <- read.table('HD128620/sumbary/HD128620_PFS.rv',header=TRUE)
+sumB <- read.table('HD128621/sumbary/HD128621_PFS.rv',header=TRUE)
+paulA <- read.table('HD128620/HD128620_PFS.rv',header=TRUE)
+paulB <- read.table('HD128621/HD128621_PFS.rv',header=TRUE)
+paulA[,2] <- paulA[,2]-paulA[1,2]+factA[1,2]
+paulB[,2] <- paulB[,2]-paulB[1,2]+factB[1,2]
+write.table(paulA,file='HD128620/HD128620_PFS.rv',quote=FALSE,row.names=FALSE)
+write.table(paulB,file='HD128621/HD128621_PFS.rv',quote=FALSE,row.names=FALSE)
+###show the data
+pdf('alphaCen.pdf',8,8)
+par(mfrow=c(2,2))
+indA <- match(factA[,1],paulA[,1])
+indB <- match(factB[,1],paulB[,1])
+plot(factA[,1],paulA[indA,2]-factA[,2])
+plot(factB[,1],paulB[indB,2]-factB[,2])
+plot(sumA[,1],paulA[indA,2]-sumA[,2])
+plot(sumB[,1],paulB[indB,2]-sumB[,2])
+dev.off()

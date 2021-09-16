@@ -1,0 +1,171 @@
+
+R version 3.6.1 (2019-07-05) -- "Action of the Toes"
+Copyright (C) 2019 The R Foundation for Statistical Computing
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> #library("Rmpfr")
+> #library("magicaxis")
+> library(optparse)
+> library(orthopolynom)
+Loading required package: polynom
+> library(pracma)
+
+Attaching package: ‘pracma’
+
+The following object is masked from ‘package:polynom’:
+
+    integral
+
+> library(foreach)
+> #library(fields)
+> #library(MASS)
+> library(foreach)
+> library(doMC)
+Loading required package: iterators
+Loading required package: parallel
+> #library(Matrix)
+> #library(doParallel)
+> #library(parallel)
+> #library(e1071)
+> #library(kernlab)
+> #library(glasso)
+> #library(JPEN)
+> #library(matrixcalc)
+> #library(mvtnorm)
+> library(MASS)
+> #library(rootSolve)
+> #library(lqmm)
+> #options(digits= 16)
+> source('constants.R')
+> source('sofa_function.R')
+> source('astrometry_function.R')
+> source('general_function.R')
+> source('timing_function.R')
+> source('rv_function.R')
+> source('update_function.R')
+> source('fit_function.R')
+> 
+> Tstart <- proc.time()
+> ####Read parameter files
+> source('read_input.R')
+opt= emulate TR ../input/HD156026.tim ../input/HD156026.par BJDtdb,ZB ../../dwarfs/bary/data/HD156026_PexoBary0.txt TRUE FALSE 
+Warning: Nmax value is not given and 0 is used!
+ok1
+Warning: An ambient temperature at the observer (tdk) is not provided and tdk=278K is adopted!
+Warning: pressure at the observer (pmb) is not provided and tdk=1013.25 millibar is adopted!
+Warning: relative humidity at the observer (rh) is not provided and rh=0.1 is adopted!
+Warning: effective wavelength of the source (wl) is not provided and wl=0.5 micrometre is adopted!
+warnings: no initial binary parameterread headread header: ../data/de430t/header.430t 
+> if(grepl('T',Par$component)){
++     OutBary <- time_Utc2tb(utc,Par)
++     OutTime <- time_Ta2te(OutBary,> 
+> i> 
+> if(grepl('A',Par$component)){
++     OutAstroT <- astro_FullModel(OutBary,OutTime,Par,Mlens=Par$mC,component='T')
++     OutAstroC <- astro_FullModel(OutBary,OutTime,Par,Mlens=Par$mT,component='C')
++ }
+> 
+> if(grepl('R',Par$component)){
++         OutRv <- rv_FullModel(OutBary,OutTime,Par)
++ #        OutRv <- rv_Numerical(utc,Par,OutBary,OutTime)
++ }
+> c> cat('ok5\n')
+ok5
+> if(Par$Unit=='TDB'){
++     source('output_tcb2tdb.R')
++> 
+> 
+> if(Par$figure){
++     if(!file.exists('../input')) system('mkdir ../input')
++     if(grepl('T',Par$component)){
++         source('timing_verbose.R')
++         source('timing_plot.R')
++     }
++     if(grepl('A',Par$component)){
++         source('astrometry_verbose.R')
++         source('astrometry_plot.R')
++     }
++     if(grepl('R',Par$component)){
++         source('rv_verbose.R')
++         source('rv_plot.R')
++     }
++ }
+
+Timing effects:
+Instant second order roemer delay in the solar system: 0.0002033288 second
+Einstein delay in the solar system: 0.001665271 second
+Shapiro delay due to all solar system objects: 1.264292e-05 second
+Shapiro delay due to Sun : 1.264188e-05 second
+Shapiro delay due to Mercury : 2.433568e-12 second
+Shapiro delay due to Venus : 6.653477e-11 second
+Shapiro delay due to Earth : 3.79589e-12 second
+Shapiro delay due to Moon : 4.668959e-14 second
+Shapiro delay due to Mars : 1.908322e-11 second
+Shapiro delay due to Jupiter : 6.509314e-08 second
+Shapiro delay due to Saturn : 1.291118e-08 second
+Shapiro delay due to Uranus : 1.82853e-10 second
+Shapiro delay due to Neptune : 2.359742e-10 second
+Shapiro delay due to all planets: 6.7755e-08 second
+Delay due to proper motion: 1447.462 second
+Roemer delay in the target system: 0 second
+Einstein delay in the target system: 0 second
+Shapiro delay in TS: 0 second
+Delay due to atmospheric effect: 2.431158e-09 second
+../results/AllTimes_HD156026_timing_none_dt0day_Ntime126.pdf 
+RV effects:
+Relativistic effects in solar system: 0.2318717 m/s
+Lensing shift by Sun : 0.00150279 m/s
+Lensing shift by Mercury : 6.059454e-10 m/s
+Lensing shift by Venus : 6.90471e-09 m/s
+Lensing shift by Earth : 4.488638e-07 m/s
+Lensing shift by Moon : 5.521042e-09 m/s
+Lensing shift by Mars : 3.688544e-10 m/s
+Lensing shift by Jupiter : 4.428376e-07 m/s
+Lensing shift by Saturn : 3.525314e-08 m/s
+Lensing shift by Uranus : 4.872763e-09 m/s
+Lensing shift by Neptune : 3.521858e-09 m/s
+Lensing by all SS planets and the Moon: 7.680488e-07 m/s
+SR effect in TS: 0 m/s
+GR effect in TS: 0 m/s
+lensing effect in target system: 0 m/s
+Second order geometric effects in TS: 0.0718553 m/s
+Third order geometric effects in TS: 3.193849e-07 m/s
+Tropospheric RV: 0.0004012927 m/s for elevation > 10 deg
+Tropospheric RV: 0.0004012927 m/s for elevation > 5 deg
+Tropospheric RV: 0.0004012927 m/s for all elevation angles
+../results/paper_HD10700_RV_none_dt0000994999893009663day_Ntime280_none.pdf 
+> 
+> Tend <- proc.time()
+> cat('duration of the process: ',round((Tend-Tstart)[3],1),'second\n')
+duration of the process:  35.5 second
+> 
+> ###fit
+> if(opt$mode=='fit'){
++     source('solution.R')
++ }
+> 
+> if(!is.null(opt$var) & !is.null(opt$out)){
++     source('save_output.R')
++ }
+
+save data to ../../dwarfs/bary/data/HD10700_PexoBary0.txt 
+> 
+> proc.time()
+   user  system elapsed 
+ 30.805   1.046  36.072 
+026 
+2 
