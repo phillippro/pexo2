@@ -38,17 +38,17 @@ opt  <- parse_args(opt_parser)
 bary.type <- ''
 #bary.type <- 'sum'
 ###Here are some examples for these arguments
-#if(FALSE){
-if(TRUE){
+if(FALSE){
+#if(TRUE){
 #opt$primary <- 'HD46375'
 #opt$primary <- 'GJ534'
 #opt$primary <- 'HD10790'
 #opt$primary <- 'HD113449'
 #opt$primary <- 'HD16160'
-opt$primary <- 'HD128620'
+opt$primary <- 'PSRJ0740+6620'
 #opt$primary <- 'GJ551'
-opt$Niter <- 1e3
-opt$ncore <- 4
+#opt$Niter <- 1e3
+#opt$ncore <- 4
 opt$Companion <- 1
 #opt$parfile <- '../input/HD128620.par'
 #opt$time <- '2447047 2458467 10'
@@ -56,15 +56,15 @@ opt$Companion <- 1
 #opt$time <- '2450000 2460000 10'
 #opt$time <- '2445000 2465000 10'
 #opt$time <- '2440000 2460000 10'
-#opt$time <- '2452850 2457498 1'
-#opt$mode  <- 'emulate'
-opt$mode  <- 'fit'
+opt$time <- '2452850 2457498 1'
+opt$mode  <- 'emulate'
+#opt$mode  <- 'fit'
 #opt$component <- 'TR'
 opt$component <- 'TAR'
 #opt$verbose <- TRUE
-#opt$instrument <- 'ESO'
+opt$instrument <- 'Green Bank'
 #opt$instrument <- 'APF'
-#opt$var <- 'JDutc BJDtdb RvST RvgT RvsT'
+opt$var <- 'JDutc BJDtdb RvST RvgT RvsT'
 #opt$var <- 'JDutc BJDtdb BJDtcb'
 }
 if(FALSE){

@@ -94,8 +94,9 @@ if(Par$binary & Par$Np>0){
             dt <- (rowSums(OutTime$tB)-Par$Tasc)/DJY
         }
     }
-    P <- exp(Par$logP)
-    phase <- (dt%%P)/P
+    Pd <- exp(Par$logP)#day
+    Py <- Pd/365.25
+    phase <- (dt%%Py)/Py
     ind <-sort(phase,index.return=TRUE)$ix
     plot(t,OutTime$RoemerTarget,xlab=xlab,ylab='RoemerTarget [s]',type='l')
     plot(phase[ind],OutTime$RoemerTarget[ind],xlab='Phase',ylab='RoemerTarget [s]',type='l')
